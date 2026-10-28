@@ -1,0 +1,21 @@
+{
+  "name": "healio-kannada-handsfree",
+  "version": "2.0.0",
+  "description": "HEALIO - Hands-free Hospital Appointment Booking System with 100% Kannada UI and Node.js REST Backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node -e \"console.log('Open tests.html in browser or run automated smoke test via node tests')\""
+  },
+  "keywords": [
+    "kannada",
+    "handsfree",
+    "voice-booking",
+    "hospital-appointment",
+    "accessibility",
+    "gaze-dwell",
+    "speech-recognition"
+  ],
+  "author": "HEALIO Team",
+  "license": "MIT"
+}

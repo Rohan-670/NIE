@@ -1,0 +1,184 @@
+{
+  "categories": [
+    {
+      "id": "healthcare",
+      "nameKannada": "ಆರೋಗ್ಯ ಮತ್ತು ಆಸ್ಪತ್ರೆ",
+      "nameEnglish": "Healthcare & Hospital",
+      "icon": "🏥",
+      "phrases": [
+        {
+          "id": "hc_1",
+          "kannada": "ನನಗೆ ಜ್ವರ ಮತ್ತು ತಲೆನೋವು ಇದೆ",
+          "phonetic": "Nanage jwara mattu talenovu ide",
+          "english": "I have fever and headache",
+          "context": "ವೈದ್ಯರಿಗೆ ನಿಮ್ಮ ರೋಗ ಲಕ್ಷಣಗಳನ್ನು ಹೇಳುವಾಗ (Describing symptoms to doctor)"
+        },
+        {
+          "id": "hc_2",
+          "kannada": "ವೈದ್ಯರ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ",
+          "phonetic": "Vaidyara appointment book maadi",
+          "english": "Book a doctor's appointment",
+          "context": "ಆಸ್ಪತ್ರೆಯ ಕೌಂಟರ್‌ನಲ್ಲಿ ಅಥವಾ ಫೋನ್‌ನಲ್ಲಿ (At hospital reception or phone)"
+        },
+        {
+          "id": "hc_3",
+          "kannada": "ಡಾಕ್ಟರ್ ಯಾವಾಗ ಬರುತ್ತಾರೆ?",
+          "phonetic": "Doctor yaavaaga baruttaare?",
+          "english": "When will the doctor arrive?",
+          "context": "ವೈದ್ಯರ ಸಮಯವನ್ನು ವಿಚಾರಿಸುವಾಗ (Inquiring about doctor's timings)"
+        },
+        {
+          "id": "hc_4",
+          "kannada": "ಔಷಧಿ ಚೀಟಿ ಕೊಡಿ",
+          "phonetic": "Aushadhi cheeti kodi",
+          "english": "Please give the prescription",
+          "context": "ವೈದ್ಯರಿಂದ ಔಷಧಿಯ ವಿವರ ಕೇಳುವಾಗ (Asking for prescription)"
+        },
+        {
+          "id": "hc_5",
+          "kannada": "ರಕ್ತ ಪರೀಕ್ಷೆ ಎಲ್ಲಿ ಮಾಡಿಸಬೇಕು?",
+          "phonetic": "Rakta pareekshe elli maadisabeku?",
+          "english": "Where should I get the blood test done?",
+          "context": "ಲ್ಯಾಬ್ ಅಥವಾ ತಪಾಸಣಾ ಕೊಠಡಿ ವಿಚಾರಿಸಲು (Locating diagnostic lab)"
+        }
+      ]
+    },
+    {
+      "id": "transportation",
+      "nameKannada": "ಪ್ರಯಾಣ ಮತ್ತು ಸಾರಿಗೆ",
+      "nameEnglish": "Travel & Transportation",
+      "icon": "🚌",
+      "phrases": [
+        {
+          "id": "tr_1",
+          "kannada": "ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಲು ಬಸ್ ಯಾವುದು?",
+          "phonetic": "Aaspathrege hogalu bus yaavudu?",
+          "english": "Which bus goes to the hospital?",
+          "context": "ಬಸ್ ನಿಲ್ದಾಣದಲ್ಲಿ ಕೇಳುವಾಗ (Asking at bus stop)"
+        },
+        {
+          "id": "tr_2",
+          "kannada": "ಮೆಟ್ರೋ ನಿಲ್ದಾಣ ಎಲ್ಲಿದೆ?",
+          "phonetic": "Metro nildaana ellide?",
+          "english": "Where is the metro station?",
+          "context": "ರಸ್ತೆಯಲ್ಲಿ ದಾರಿ ಕೇಳುವಾಗ (Asking for directions)"
+        },
+        {
+          "id": "tr_3",
+          "kannada": "ಆಟೋ ಮೀಟರ್ ಹಾಕಿ",
+          "phonetic": "Auto meter haaki",
+          "english": "Please turn on the auto meter",
+          "context": "ಆಟೋ ಪ್ರಯಾಣದ ಸಮಯದಲ್ಲಿ (When taking an auto rickshaw)"
+        },
+        {
+          "id": "tr_4",
+          "kannada": "ಮುಂದಿನ ನಿಲ್ದಾಣದಲ್ಲಿ ಇಳಿಸಿ",
+          "phonetic": "Mundina nildaanadalli ilisi",
+          "english": "Please drop me at the next stop",
+          "context": "ಬಸ್ ಅಥವಾ ಟ್ಯಾಕ್ಸಿಯಲ್ಲಿ (Requesting stop)"
+        }
+      ]
+    },
+    {
+      "id": "pharmacy",
+      "nameKannada": "ಔಷಧಾಲಯ ಮತ್ತು ಶಾಪಿಂಗ್",
+      "nameEnglish": "Pharmacy & Shopping",
+      "icon": "💊",
+      "phrases": [
+        {
+          "id": "ph_1",
+          "kannada": "ಈ ಮಾತ್ರೆಗಳು ಲಭ್ಯವಿದೆಯೇ?",
+          "phonetic": "Ee maatregalu labhyavideye?",
+          "english": "Are these tablets available?",
+          "context": "ಔಷಧಿ ಅಂಗಡಿಯಲ್ಲಿ (At medical store)"
+        },
+        {
+          "id": "ph_2",
+          "kannada": "ಇದರ ಬೆಲೆ ಎಷ್ಟು?",
+          "phonetic": "Idara bele eshtu?",
+          "english": "How much does this cost?",
+          "context": "ಬೆಲೆ ವಿಚಾರಿಸುವಾಗ (Asking price)"
+        },
+        {
+          "id": "ph_3",
+          "kannada": "ರಸೀದಿ ಅಥವಾ ಬಿಲ್ ಕೊಡಿ",
+          "phonetic": "Raseedi athava bill kodi",
+          "english": "Please give the receipt or bill",
+          "context": "ಪಾವತಿ ಮಾಡಿದ ನಂತರ (After payment)"
+        },
+        {
+          "id": "ph_4",
+          "kannada": "ಆನ್‌ಲೈನ್ ಪಾವತಿ ಮಾಡಬಹುದೇ?",
+          "phonetic": "Online paavati maadabahude?",
+          "english": "Can I pay online (UPI)?",
+          "context": "ಡಿಜಿಟಲ್ ಪಾವತಿ ಕೇಳುವಾಗ (Paying via UPI/card)"
+        }
+      ]
+    },
+    {
+      "id": "workplace",
+      "nameKannada": "ದೈನಂದಿನ ಮಾತುಕತೆ ಮತ್ತು ಕೆಲಸ",
+      "nameEnglish": "Workplace & Daily Life",
+      "icon": "🏢",
+      "phrases": [
+        {
+          "id": "wp_1",
+          "kannada": "ನಮಸ್ಕಾರ, ನೀವು ಹೇಗಿದ್ದೀರಿ?",
+          "phonetic": "Namaskara, neevu hegiddeeri?",
+          "english": "Hello, how are you?",
+          "context": "ಸ್ನೇಹಿ ಅಥವಾ ಸಹೋದ್ಯೋಗಿಗಳನ್ನು ಭೇಟಿಯಾದಾಗ (Greeting colleagues/friends)"
+        },
+        {
+          "id": "wp_2",
+          "kannada": "ದಯವಿಟ್ಟು ನನಗೆ ಸ್ವಲ್ಪ ಸಹಾಯ ಮಾಡಿ",
+          "phonetic": "Dayavittu nanage swalpa sahaaya maadi",
+          "english": "Please help me a little",
+          "context": "ಸಹಾಯ ಕೇಳುವಾಗ (Politely asking for help)"
+        },
+        {
+          "id": "wp_3",
+          "kannada": "ತುಂಬಾ ಧನ್ಯವಾದಗಳು",
+          "phonetic": "Tumba dhanyavaadagalu",
+          "english": "Thank you very much",
+          "context": "ಕೃತಜ್ಞತೆ ವ್ಯಕ್ತಪಡಿಸುವಾಗ (Expressing gratitude)"
+        },
+        {
+          "id": "wp_4",
+          "kannada": "ಮತ್ತೆ ಸಿಗೋಣ",
+          "phonetic": "Matte sigona",
+          "english": "See you again",
+          "context": "ಹೋಗಿಬರುತ್ತೇನೆ ಎಂದು ಹೇಳುವಾಗ (Saying goodbye)"
+        }
+      ]
+    },
+    {
+      "id": "emergency",
+      "nameKannada": "ತುರ್ತು ಪರಿಸ್ಥಿತಿ",
+      "nameEnglish": "Emergency Situations",
+      "icon": "🚨",
+      "phrases": [
+        {
+          "id": "em_1",
+          "kannada": "ತಕ್ಷಣ ೧೦೮ ಆಂಬ್ಯುಲೆನ್ಸ್‌ಗೆ ಕರೆ ಮಾಡಿ",
+          "phonetic": "Takshana 108 ambulance-ge kare maadi",
+          "english": "Call 108 ambulance immediately",
+          "context": "ವೈದ್ಯಕೀಯ ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ (Medical emergency)"
+        },
+        {
+          "id": "em_2",
+          "kannada": "ಇಲ್ಲಿ ಅಪಘಾತವಾಗಿದೆ, ಸಹಾಯ ಬೇಕು",
+          "phonetic": "Illi apaghaatavaagide, sahaaya beku",
+          "english": "An accident has occurred here, need help",
+          "context": "ರಸ್ತೆ ಅಪಘಾತದ ಸಮಯದಲ್ಲಿ (Roadside accident)"
+        },
+        {
+          "id": "em_3",
+          "kannada": "ಹತ್ತಿರದ ಆಸ್ಪತ್ರೆ ಎಲ್ಲಿದೆ?",
+          "phonetic": "Hattirada aaspathre ellide?",
+          "english": "Where is the nearest hospital?",
+          "context": "ತುರ್ತಾಗಿ ಆಸ್ಪತ್ರೆ ಹುಡುಕುವಾಗ (Finding nearest hospital)"
+        }
+      ]
+    }
+  ]
+}

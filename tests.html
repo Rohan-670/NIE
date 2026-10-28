@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="kn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ಹೀಲಿಯೋ - ಕನ್ನಡ ಎನ್‌ಎಲ್‌ಪಿ ಪರೀಕ್ಷೆಗಳು (NLP Unit Tests)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0d5c56;
+      --bg: #f3faf9;
+      --card-bg: #ffffff;
+      --text: #092624;
+      --success: #178a4c;
+      --fail: #c81919;
+      --border: #c4e5e1;
+    }
+    body {
+      font-family: 'Noto Sans Kannada', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    h1 {
+      color: var(--primary);
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .summary-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .score-badge {
+      font-size: 24px;
+      font-weight: 800;
+      padding: 8px 18px;
+      border-radius: 9999px;
+      background: #e6f8ee;
+      color: var(--success);
+      border: 2px solid var(--success);
+    }
+    .score-badge.has-failures {
+      background: #feebeb;
+      color: var(--fail);
+      border-color: var(--fail);
+    }
+    .test-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border: 2px solid var(--border);
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: #e2f4f1;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .badge-pass {
+      background: #e6f8ee;
+      color: var(--success);
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .badge-fail {
+      background: #feebeb;
+      color: var(--fail);
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    .code-snippet {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: #f7f9f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid #dbe5e4;
+    }
+    .btn-run {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧪 ಹೀಲಿಯೋ - ಕನ್ನಡ ಎನ್‌ಎಲ್‌ಪಿ ಪರೀಕ್ಷಾ ಸೂಟ್ (Kannada NLP Tests)</h1>
+  <p style="margin-bottom: 20px; color: #325855;">
+    ಕನ್ನಡ ವಾಕ್ಯಗಳು, ಉದ್ದೇಶಗಳು (Intents), ವಿಭಾಗಗಳು (Departments), ದಿನಾಂಕಗಳು (Dates), ಸಮಯದ ಸ್ಲಾಟ್‌ಗಳು (Time Slots), ಸಂಖ್ಯೆಗಳು (Numbers) ಮತ್ತು ತುರ್ತು ಪರಿಶೀಲನೆಯ (Emergency) ಘಟಕ ಪರೀಕ್ಷೆಗಳು.
+  </p>
+
+  <div class="summary-card">
+    <div>
+      <div style="font-size: 18px; font-weight: 700;">ಪರೀಕ್ಷಾ ಫಲಿತಾಂಶ:</div>
+      <div id="test-stats-label">ಪರೀಕ್ಷೆಗಳು ಚಾಲನೆಯಾಗುತ್ತಿವೆ...</div>
+    </div>
+    <div id="test-score-badge" class="score-badge">...</div>
+    <button type="button" class="btn-run" onclick="runTests()">🔄 ಮರುಪರೀಕ್ಷಿಸಿ (Re-run)</button>
+  </div>
+
+  <table class="test-table">
+    <thead>
+      <tr>
+        <th style="width: 50px;">ಕ್ರ.ಸಂ.</th>
+        <th>ಪರೀಕ್ಷಾ ವಾಕ್ಯ (Input Phrase)</th>
+        <th>ನಿರೀಕ್ಷಿತ ಫಲಿತಾಂಶ (Expected)</th>
+        <th>ವಾಸ್ತವಿಕ ಫಲಿತಾಂಶ (Actual)</th>
+        <th style="width: 90px;">ಸ್ಥಿತಿ (Status)</th>
+      </tr>
+    </thead>
+    <tbody id="test-results-body"></tbody>
+  </table>
+
+  <!-- Include Kannada NLP Engine -->
+  <script src="nlp.js"></script>
+
+  <script>
+    // 30 Comprehensive Unit Test Cases
+    const TEST_CASES = [
+      // 1. Intents
+      {
+        id: 1,
+        phrase: 'ಬುಕ್ ಮಾಡಿ',
+        category: 'Intent: Book',
+        assertFn: (p) => p.intent === 'book',
+        expectedDesc: 'intent === "book"'
+      },
+      {
+        id: 2,
+        phrase: 'ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಕಾಯ್ದಿರಿಸಿ',
+        category: 'Intent: Book',
+        assertFn: (p) => p.intent === 'book',
+        expectedDesc: 'intent === "book"'
+      },
+      {
+        id: 3,
+        phrase: 'ವೈದ್ಯರನ್ನು ನೋಡಿ ಅಪಾಯಿಂಟ್ಮೆಂಟ್ ಮಾಡಿ',
+        category: 'Intent: Book',
+        assertFn: (p) => p.intent === 'book',
+        expectedDesc: 'intent === "book"'
+      },
+      {
+        id: 4,
+        phrase: 'ರದ್ದು ಮಾಡಿ',
+        category: 'Intent: Cancel',
+        assertFn: (p) => p.intent === 'cancel',
+        expectedDesc: 'intent === "cancel"'
+      },
+      {
+        id: 5,
+        phrase: 'ಬುಕಿಂಗ್ ಕ್ಯಾನ್ಸಲ್ ಮಾಡಿ',
+        category: 'Intent: Cancel',
+        assertFn: (p) => p.intent === 'cancel',
+        expectedDesc: 'intent === "cancel"'
+      },
+      {
+        id: 6,
+        phrase: 'ದಿನಾಂಕ ಬದಲಿಸಿ',
+        category: 'Intent: Reschedule',
+        assertFn: (p) => p.intent === 'reschedule',
+        expectedDesc: 'intent === "reschedule"'
+      },
+      {
+        id: 7,
+        phrase: 'ಮುಂದಿನ ದಿನಕ್ಕೆ ಮರುಹೊಂದಿಸಿ',
+        category: 'Intent: Reschedule',
+        assertFn: (p) => p.intent === 'reschedule',
+        expectedDesc: 'intent === "reschedule"'
+      },
+      {
+        id: 8,
+        phrase: 'ಹೌದು, ಸರಿ',
+        category: 'Intent: Yes',
+        assertFn: (p) => p.intent === 'yes',
+        expectedDesc: 'intent === "yes"'
+      },
+      {
+        id: 9,
+        phrase: 'ಖಂಡಿತವಾಗಿ ಮುಂದುವರಿಯಿರಿ',
+        category: 'Intent: Yes',
+        assertFn: (p) => p.intent === 'yes',
+        expectedDesc: 'intent === "yes"'
+      },
+      {
+        id: 10,
+        phrase: 'ಇಲ್ಲ ಬೇಡ',
+        category: 'Intent: No',
+        assertFn: (p) => p.intent === 'no',
+        expectedDesc: 'intent === "no"'
+      },
+      {
+        id: 11,
+        phrase: 'ಹಿಂದಕ್ಕೆ ಹೋಗಿ',
+        category: 'Intent: Back',
+        assertFn: (p) => p.intent === 'back',
+        expectedDesc: 'intent === "back"'
+      },
+      {
+        id: 12,
+        phrase: 'ಸಹಾಯ ಬೇಕು ಮಾರ್ಗದರ್ಶನ ನೀಡಿ',
+        category: 'Intent: Help',
+        assertFn: (p) => p.intent === 'help',
+        expectedDesc: 'intent === "help"'
+      },
+
+      // 2. Emergency Trigger Detection (Safety Critical)
+      {
+        id: 13,
+        phrase: 'ಎದೆ ನೋವು ತೀವ್ರವಾಗಿದೆ',
+        category: 'Emergency: Chest pain',
+        assertFn: (p) => p.isEmergency === true && p.intent === 'emergency',
+        expectedDesc: 'isEmergency === true'
+      },
+      {
+        id: 14,
+        phrase: 'ಉಸಿರಾಡಲು ಕಷ್ಟ ಆಗುತ್ತಿದೆ',
+        category: 'Emergency: Breathing',
+        assertFn: (p) => p.isEmergency === true && p.intent === 'emergency',
+        expectedDesc: 'isEmergency === true'
+      },
+      {
+        id: 15,
+        phrase: 'ತೀವ್ರ ರಕ್ತಸ್ರಾವ ಆಗುತ್ತಿದೆ',
+        category: 'Emergency: Bleeding',
+        assertFn: (p) => p.isEmergency === true && p.intent === 'emergency',
+        expectedDesc: 'isEmergency === true'
+      },
+      {
+        id: 16,
+        phrase: 'ಹೃದಯಾಘಾತ ಲಕ್ಷಣ ಕಾಣಿಸುತ್ತಿದೆ',
+        category: 'Emergency: Heart attack',
+        assertFn: (p) => p.isEmergency === true && p.intent === 'emergency',
+        expectedDesc: 'isEmergency === true'
+      },
+
+      // 3. Department Extraction
+      {
+        id: 17,
+        phrase: 'ಹೃದಯ ವಿಭಾಗದ ವೈದ್ಯರನ್ನು ನೋಡಬೇಕು',
+        category: 'Dept: Cardiology',
+        assertFn: (p) => p.entities.department && p.entities.department.departmentId === 'cardiology',
+        expectedDesc: 'departmentId === "cardiology"'
+      },
+      {
+        id: 18,
+        phrase: 'ಮಕ್ಕಳ ವಿಭಾಗ ತೋರಿಸಿ',
+        category: 'Dept: Paediatrics',
+        assertFn: (p) => p.entities.department && p.entities.department.departmentId === 'paediatrics',
+        expectedDesc: 'departmentId === "paediatrics"'
+      },
+      {
+        id: 19,
+        phrase: 'ಕಾಲು ಮುರಿತ ಮತ್ತು ಮೂಳೆ ನೋವು ಇದೆ',
+        category: 'Dept: Orthopaedics',
+        assertFn: (p) => p.entities.department && p.entities.department.departmentId === 'orthopaedics',
+        expectedDesc: 'departmentId === "orthopaedics"'
+      },
+      {
+        id: 20,
+        phrase: 'ಕಣ್ಣು ತಪಾಸಣೆ ಮತ್ತು ದೃಷ್ಟಿ ಪರೀಕ್ಷೆ',
+        category: 'Dept: Ophthalmology',
+        assertFn: (p) => p.entities.department && p.entities.department.departmentId === 'ophthalmology',
+        expectedDesc: 'departmentId === "ophthalmology"'
+      },
+      {
+        id: 21,
+        phrase: 'ಜ್ವರ ಮತ್ತು ಶೀತ ಸಾಮಾನ್ಯ ವೈದ್ಯರನ್ನು ಭೇಟಿ ಮಾಡಿ',
+        category: 'Dept: General Medicine',
+        assertFn: (p) => p.entities.department && p.entities.department.departmentId === 'general_medicine',
+        expectedDesc: 'departmentId === "general_medicine"'
+      },
+
+      // 4. Date Entity Extraction
+      {
+        id: 22,
+        phrase: 'ನಾಳೆ ಬುಕ್ ಮಾಡಿ',
+        category: 'Date: Tomorrow',
+        assertFn: (p) => p.entities.date && p.entities.date.key === 'tomorrow' && p.entities.date.offsetDays === 1,
+        expectedDesc: 'date.key === "tomorrow"'
+      },
+      {
+        id: 23,
+        phrase: 'ನಾಡಿದ್ದು ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಕೊಡಿ',
+        category: 'Date: Day after tomorrow',
+        assertFn: (p) => p.entities.date && p.entities.date.key === 'day_after_tomorrow' && p.entities.date.offsetDays === 2,
+        expectedDesc: 'date.key === "day_after_tomorrow"'
+      },
+      {
+        id: 24,
+        phrase: 'ಸೋಮವಾರ ಬೆಳಿಗ್ಗೆ',
+        category: 'Date: Weekday Monday',
+        assertFn: (p) => p.entities.date && p.entities.date.kannada === 'ಸೋಮವಾರ',
+        expectedDesc: 'date.kannada === "ಸೋಮವಾರ"'
+      },
+
+      // 5. Time Slot Extraction
+      {
+        id: 25,
+        phrase: 'ಬೆಳಿಗ್ಗೆ ಸಮಯದ ಸ್ಲಾಟ್ ಕೊಡಿ',
+        category: 'Time: Morning',
+        assertFn: (p) => p.entities.timeSlot && p.entities.timeSlot.slotId === 'morning',
+        expectedDesc: 'timeSlot.slotId === "morning"'
+      },
+      {
+        id: 26,
+        phrase: 'ಮಧ್ಯಾಹ್ನ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬೇಕು',
+        category: 'Time: Afternoon',
+        assertFn: (p) => p.entities.timeSlot && p.entities.timeSlot.slotId === 'afternoon',
+        expectedDesc: 'timeSlot.slotId === "afternoon"'
+      },
+
+      // 6. Number & Code Entities
+      {
+        id: 27,
+        phrase: 'ಡೆಮೊ ಕೋಡ್ ೪೨೮೫',
+        category: 'Numbers: Kannada digits',
+        assertFn: (p) => p.entities.numbers && p.entities.numbers.some(n => n.digits === '4285' || n.kannadaDigits === '೪೨೮೫'),
+        expectedDesc: 'extracts "೪೨೮೫" or 4285'
+      },
+      {
+        id: 28,
+        phrase: 'ನಾಲ್ಕು ಎರಡು ಎಂಟು ಐದು',
+        category: 'Numbers: Spoken words',
+        assertFn: (p) => p.entities.numbers && p.entities.numbers.length >= 4,
+        expectedDesc: 'extracts 4 spoken numbers'
+      },
+
+      // 7. Fuzzy Matching & Typo Tolerance (Levenshtein distance 1)
+      {
+        id: 29,
+        phrase: 'ಹೌಧು',
+        category: 'Fuzzy: Intent yes',
+        assertFn: (p) => p.intent === 'yes',
+        expectedDesc: 'intent === "yes" (via fuzzy match)'
+      },
+      {
+        id: 30,
+        phrase: 'ಬುಕ್ಕಿಂಗ್ ರದ್ದು ಮಾಡು',
+        category: 'Fuzzy: Intent cancel',
+        assertFn: (p) => p.intent === 'cancel',
+        expectedDesc: 'intent === "cancel" (via fuzzy match)'
+      },
+
+      // 8. Voice Patient Name Extraction
+      {
+        id: 31,
+        phrase: 'ನನ್ನ ಹೆಸರು ರಮೇಶ್ ಕುಮಾರ್',
+        category: 'Voice Name: Explicit Prefix',
+        assertFn: (p) => p.entities.name === 'ರಮೇಶ್ ಕುಮಾರ್',
+        expectedDesc: 'entities.name === "ರಮೇಶ್ ಕುಮಾರ್"'
+      },
+      {
+        id: 32,
+        phrase: 'ರೋಗಿಯ ಹೆಸರು ಅನಿತಾ ಗೌಡ',
+        category: 'Voice Name: Patient Prefix',
+        assertFn: (p) => p.entities.name === 'ಅನಿತಾ ಗೌಡ',
+        expectedDesc: 'entities.name === "ಅನಿತಾ ಗೌಡ"'
+      },
+      {
+        id: 33,
+        phrase: 'ಸುರೇಶ್ ಹೆಗಡೆ',
+        category: 'Voice Name: Dedicated Context',
+        context: { expectingName: true },
+        assertFn: (p) => p.entities.name === 'ಸುರೇಶ್ ಹೆಗಡೆ',
+        expectedDesc: 'entities.name === "ಸುರೇಶ್ ಹೆಗಡೆ"'
+      },
+
+      // 9. Everyday Kannada Learning Phrases
+      {
+        id: 34,
+        phrase: 'ನನಗೆ ಜ್ವರ ಮತ್ತು ತಲೆನೋವು ಇದೆ',
+        category: 'Everyday Life: Healthcare Phrase',
+        assertFn: (p) => p.entities.department && p.entities.department.departmentId === 'general_medicine',
+        expectedDesc: 'departmentId === "general_medicine"'
+      },
+      {
+        id: 35,
+        phrase: 'ಆಸ್ಪತ್ರೆಗೆ ಹೋಗಲು ಬಸ್ ಯಾವುದು',
+        category: 'Everyday Life: Travel Phrase',
+        assertFn: (p) => {
+          const clean = KannadaNLP.normalizeText(p.text);
+          return clean.includes('ಆಸ್ಪತ್ರೆಗೆ') && clean.includes('ಬಸ್');
+        },
+        expectedDesc: 'text includes "ಆಸ್ಪತ್ರೆಗೆ" and "ಬಸ್"'
+      },
+
+      // 10. Voice Patient Age Extraction
+      {
+        id: 36,
+        phrase: 'ನನ್ನ ವಯಸ್ಸು ೪೫',
+        category: 'Voice Age: Explicit Prefix',
+        assertFn: (p) => p.entities.age === '೪೫',
+        expectedDesc: 'entities.age === "೪೫"'
+      },
+      {
+        id: 37,
+        phrase: 'ವಯಸ್ಸು ೩೨ ವರ್ಷ',
+        category: 'Voice Age: Years Suffix',
+        assertFn: (p) => p.entities.age === '೩೨',
+        expectedDesc: 'entities.age === "೩೨"'
+      },
+      {
+        id: 38,
+        phrase: '೩೫ ವರ್ಷ',
+        category: 'Voice Age: Direct Number & Years',
+        assertFn: (p) => p.entities.age === '೩೫',
+        expectedDesc: 'entities.age === "೩೫"'
+      },
+      {
+        id: 39,
+        phrase: '೨೮',
+        category: 'Voice Age: Dedicated Age Context',
+        context: { expectingAge: true },
+        assertFn: (p) => p.entities.age === '೨೮',
+        expectedDesc: 'entities.age === "೨೮"'
+      }
+    ];
+
+    function runTests() {
+      const tbody = document.getElementById('test-results-body');
+      tbody.innerHTML = '';
+
+      let passedCount = 0;
+      const totalCount = TEST_CASES.length;
+
+      TEST_CASES.forEach((tc) => {
+        const parsed = KannadaNLP.parse(tc.phrase, tc.context || {});
+        let passed = false;
+        try {
+          passed = Boolean(tc.assertFn(parsed));
+        } catch (e) {
+          passed = false;
+        }
+
+        if (passed) passedCount++;
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${tc.id}</td>
+          <td><strong>${tc.phrase}</strong><div style="font-size:12px; color:#597976;">${tc.category}</div></td>
+          <td><span class="code-snippet">${tc.expectedDesc}</span></td>
+          <td><span class="code-snippet">intent: ${parsed.intent}, emerg: ${parsed.isEmergency}</span></td>
+          <td>${passed ? '<span class="badge-pass">ಉತ್ತೀರ್ಣ (Pass)</span>' : '<span class="badge-fail">ಅನುತ್ತೀರ್ಣ (Fail)</span>'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      const badge = document.getElementById('test-score-badge');
+      const stats = document.getElementById('test-stats-label');
+
+      badge.textContent = `${passedCount} / ${totalCount} ಉತ್ತೀರ್ಣ`;
+      stats.textContent = `${totalCount} ಪರೀಕ್ಷೆಗಳಲ್ಲಿ ${passedCount} ಯಶಸ್ವಿಯಾಗಿವೆ.`;
+
+      if (passedCount === totalCount) {
+        badge.className = 'score-badge';
+      } else {
+        badge.className = 'score-badge has-failures';
+      }
+
+      console.log(`[KannadaNLP Test Suite] Passed ${passedCount}/${totalCount} tests.`);
+      return { passed: passedCount, total: totalCount, success: passedCount === totalCount };
+    }
+
+    // Expose globally for console testing
+    window.runKannadaTests = runTests;
+
+    // Run automatically on load
+    window.addEventListener('DOMContentLoaded', runTests);
+  </script>
+</body>
+</html>

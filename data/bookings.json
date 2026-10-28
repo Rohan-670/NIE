@@ -1,0 +1,32 @@
+[
+  {
+    "id": "BK_1793187214325",
+    "refCode": "HL-೧೫೫೭",
+    "patientName": "19 ವರ್ಷ",
+    "patientAge": "೨೦",
+    "department": {
+      "id": "general_medicine",
+      "kannadaName": "ಸಾಮಾನ್ಯ ವೈದ್ಯ",
+      "doctorName": "ಡಾ. ಮಂಜುನಾಥ್ ಕೆ.",
+      "icon": "🩺",
+      "description": "ಜ್ವರ, ಶೀತ, ಮಧುಮೇಹ ಮತ್ತು ಸಾಮಾನ್ಯ ತಪಾಸಣೆ",
+      "phonetic": "Saamaanya Vaidya",
+      "englishMeaning": "General Medicine (Physician)"
+    },
+    "date": {
+      "dateObj": "2026-10-28T11:33:30.938Z",
+      "isoDate": "2026-10-28",
+      "weekdayKannada": "ಬುಧವಾರ",
+      "dateKannada": "೨೮",
+      "monthKannada": "ಅಕ್ಟೋಬರ್",
+      "fullKannadaLabel": "೨೮ ಅಕ್ಟೋಬರ್, ಬುಧವಾರ",
+      "chipLabel": "ಇಂದು (ಬುಧವಾರ)"
+    },
+    "slot": {
+      "id": "m1",
+      "timeKannada": "೧೦:೦೦ ಬೆಳಿಗ್ಗೆ",
+      "timeLabel": "10:00 AM"
+    },
+    "createdAt": "2026-10-28T11:33:34.327Z"
+  }
+]

@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="kn" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0d5c56">
+  <title>ಹೀಲಿಯೋ - ಕೈಮುಕ್ತ ಆಸ್ಪತ್ರೆ ನೇಮಕಾತಿ ವ್ಯವಸ್ಥೆ</title>
+  
+  <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- Pinned Three.js r128 for 3D Background -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+
+  <!-- Accessible Skip Link -->
+  <a href="#main-booking-flow" class="skip-link">ಮುಖ್ಯ ವಿಷಯಕ್ಕೆ ಹೋಗಿ</a>
+
+  <!-- 3D Medical Cross Background Canvas -->
+  <div id="scene-background" class="scene-background" aria-hidden="true"></div>
+
+  <!-- Toast Notification Stack in Kannada -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Header Navigation -->
+  <header class="app-header" role="banner">
+    <div class="header-container">
+      <div class="brand-section">
+        <div class="brand-logo-icon" aria-hidden="true">🏥</div>
+        <div>
+          <h1 class="brand-title">ಹೀಲಿಯೋ</h1>
+          <div style="font-size: 13px; font-weight: 700; color: var(--color-primary);">ಕೈಮುಕ್ತ ಆಸ್ಪತ್ರೆ ಸೇವೆ</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Learn Kannada in Everyday Life Button -->
+        <button type="button" id="nav-learn-kannada-btn" class="nav-pill-btn dwell-btn" style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); color: #0369a1; border-color: #38bdf8; font-weight: 800;" aria-label="ದೈನಂದಿನ ಜೀವನದಲ್ಲಿ ಕನ್ನಡ ಕಲಿಯಿರಿ">
+          🎓 ಕನ್ನಡ ಕಲಿಯಿರಿ (Learn Kannada)
+        </button>
+
+        <!-- Contextual Learning Helper Toggle -->
+        <button type="button" id="learning-helper-toggle-btn" class="nav-pill-btn dwell-btn" style="border-color:#14b8a6; color:#0f766e; font-weight:700;" aria-label="ಕಲಿಕೆ ಸಹಾಯಕ ಟಾಗಲ್ ಮಾಡಿ">
+          💡 ಕಲಿಕೆ ಸಹಾಯಕ: ಆಫ್
+        </button>
+
+        <!-- Replay Voice Prompt Button -->
+        <button type="button" id="replay-prompt-btn" class="nav-pill-btn dwell-btn" aria-label="ಧ್ವನಿ ಸೂಚನೆ ಮತ್ತೆ ಕೇಳಿ">
+          🔊 ಮತ್ತೆ ಕೇಳಿ
+        </button>
+
+        <!-- My Bookings Nav Button -->
+        <button type="button" id="nav-my-bookings-btn" class="nav-pill-btn dwell-btn" aria-label="ನನ್ನ ಬುಕಿಂಗ್‌ಗಳನ್ನು ವೀಕ್ಷಿಸಿ">
+          📋 ನನ್ನ ಬುಕಿಂಗ್‌ಗಳು
+        </button>
+
+        <!-- Home Button -->
+        <button type="button" id="nav-home-btn" class="nav-pill-btn dwell-btn" aria-label="ಮುಖ್ಯ ಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ">
+          🏠 ಮುಖಪುಟ
+        </button>
+
+        <!-- Persistent Red Emergency Help Button -->
+        <button type="button" id="emergency-top-btn" class="emergency-top-btn dwell-btn" aria-label="ತುರ್ತು ವೈದ್ಯಕೀಯ ಸಹಾಯ ೧೦೮">
+          🚨 ತುರ್ತು ಸಹಾಯ (೧೦೮)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Booking Application -->
+  <main id="main-booking-flow" class="main-content" role="main">
+
+    <!-- Speech Live Status & Recognition Indicator Bar -->
+    <div class="speech-status-bar" role="region" aria-label="ಧ್ವನಿ ಸ್ಥಿತಿ">
+      <div class="speech-live-indicator">
+        <div id="speech-wave-indicator" class="wave-animation" style="display:none;" aria-hidden="true">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+        <span id="speech-status-label">ಧ್ವನಿ ಸಿದ್ಧವಾಗಿದೆ</span>
+      </div>
+
+      <div class="speech-transcript-box" aria-live="polite">
+        <span style="font-weight:700; margin-right:8px; color:var(--color-primary);">ಧ್ವನಿ ಪಠ್ಯ:</span>
+        <span id="speech-transcript-text">ಯಾವುದೇ ಧ್ವನಿ ಇನ್ನೂ ದಾಖಲಾಗಿಲ್ಲ...</span>
+      </div>
+
+      <div style="display:flex; gap:8px;">
+        <button type="button" id="voice-toggle-btn" class="nav-pill-btn dwell-btn" aria-label="ಧ್ವನಿ ಆಲಿಸುವಿಕೆ ಪ್ರಾರಂಭಿಸಿ ಅಥವಾ ನಿಲ್ಲಿಸಿ">
+          🎤 ಮಾತನಾಡಿ
+        </button>
+        <button type="button" id="stop-listen-btn" class="nav-pill-btn dwell-btn" style="color:var(--color-emergency); border-color:var(--color-emergency);" aria-label="ಧ್ವನಿ ನಿಲ್ಲಿಸಿ">
+          🛑 ನಿಲ್ಲಿಸಿ
+        </button>
+      </div>
+    </div>
+
+    <!-- Voice Browser Support Alert (Hidden if supported) -->
+    <div id="voice-support-notice" class="safety-disclaimer-box" style="display:none; background:#ffecec; border-color:#f5b0b0; color:#a31616;" role="alert">
+      ⚠️ ನಿಮ್ಮ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ವೆಬ್ ಧ್ವನಿ ಗುರುತಿಸುವಿಕೆ ಸೌಲಭ್ಯ ಲಭ್ಯವಿಲ್ಲ. ದಯವಿಟ್ಟು ಬಟನ್‌ಗಳ ವಿಧಾನವನ್ನು ಬಳಸಿ ಮುಂದುವರಿಯಿರಿ.
+    </div>
+
+    <!-- Step Progress Tracker Bar -->
+    <nav id="step-tracker" class="step-tracker" aria-label="ಬುಕಿಂಗ್ ಹಂತಗಳು" style="display:none;">
+      <div class="step-item" data-step="1">
+        <span class="step-badge">೧</span>
+        <span>ವಿಧಾನ</span>
+      </div>
+      <div class="step-item" data-step="2">
+        <span class="step-badge">೨</span>
+        <span>ಗುರುತು</span>
+      </div>
+      <div class="step-item" data-step="3">
+        <span class="step-badge">೩</span>
+        <span>ವಿಭಾಗ</span>
+      </div>
+      <div class="step-item" data-step="4">
+        <span class="step-badge">೪</span>
+        <span>ಸಮಯ</span>
+      </div>
+      <div class="step-item" data-step="5">
+        <span class="step-badge">೫</span>
+        <span>ದೃಢೀಕರಣ</span>
+      </div>
+    </nav>
+
+    <!-- SCREEN 1: ಸ್ವಾಗತ (Welcome Screen) -->
+    <section id="screen-welcome" class="screen-panel active" aria-labelledby="welcome-heading">
+      <div class="content-card" style="text-align:center; padding: var(--space-xl) var(--space-lg);">
+        <h2 id="welcome-heading" class="page-title">ಹೀಲಿಯೋಗೆ ಸುಸ್ವಾಗತ</h2>
+        <p class="page-subtitle" style="max-width:680px; margin: 0 auto var(--space-lg);">
+          ಸಂಪೂರ್ಣ ಕೈಮುಕ್ತ ಆಸ್ಪತ್ರೆ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಕಾಯ್ದಿರಿಸುವ ವ್ಯವಸ್ಥೆ. ನಿಮ್ಮ ಮಾತಿನಿಂದ ಅಥವಾ ದೊಡ್ಡ ಬಟನ್‌ಗಳನ್ನು ಒತ್ತಿ ಸುಲಭವಾಗಿ ಬುಕ್ ಮಾಡಿ.
+        </p>
+
+        <!-- Big Primary Welcome Button -->
+        <button type="button" id="btn-welcome-speak" class="btn-primary hero-action-btn dwell-btn" aria-label="ಮಾತನಾಡಿ ಬುಕ್ ಮಾಡಿ">
+          🎙️ ಮಾತನಾಡಿ ಬುಕ್ ಮಾಡಿ
+        </button>
+
+        <div style="margin-top: 12px;">
+          <button type="button" id="btn-welcome-start" class="btn-secondary dwell-btn" style="min-width: 280px;" aria-label="ಬುಕಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ">
+            👉 ಬುಕಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ (ವಿಧಾನ ಆರಿಸಿ)
+          </button>
+        </div>
+
+        <!-- Privacy & Medical Safety Notice -->
+        <div class="safety-disclaimer-box" role="note" style="text-align: left; margin-top: var(--space-xl);">
+          <div style="font-weight: 800; margin-bottom: 4px;">🔒 ಗೌಪ್ಯತೆ ಮತ್ತು ಸುರಕ್ಷತೆ ಮಾಹಿತಿ:</div>
+          <div>• ನಿಮ್ಮ ಯಾವುದೇ ವೈಯಕ್ತಿಕ ಮಾಹಿತಿ ಸಾಧನದಿಂದ ಹೊರಗೆ ಹೋಗುವುದಿಲ್ಲ.</div>
+          <div>• ಧ್ವನಿಯನ್ನು ಕೇವಲ ಬ್ರೌಸರ್‌ನಲ್ಲಿ ಮಾತ್ರ ಸಂಸ್ಕರಿಸಲಾಗುತ್ತದೆ; ಯಾವುದೇ ಧ್ವನಿ ರೆಕಾರ್ಡ್ ಆಗುವುದಿಲ್ಲ.</div>
+          <div style="margin-top: 4px; font-weight: 700; color: #8a3b00;">• ಇದು ಡೆಮೊ ಆವೃತ್ತಿ. ವೈದ್ಯಕೀಯ ಸಲಹೆ ಅಲ್ಲ.</div>
+        </div>
+
+        <!-- Quick Demo Tools Button -->
+        <div style="margin-top: var(--space-md); display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+          <button type="button" id="smoke-test-run-btn" class="nav-pill-btn dwell-btn" aria-label="ಸ್ವಯಂಚಾಲಿತ ಪರೀಕ್ಷೆ ಚಲಾಯಿಸಿ">
+            ⚡ ಸ್ವಯಂಚಾಲಿತ ಪರೀಕ್ಷೆ (ಸ್ಮೋಕ್ ಟೆಸ್ಟ್)
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: ಇನ್ಪುಟ ವಿಧಾನ (Input Mode Selection) -->
+    <section id="screen-input_mode" class="screen-panel" aria-labelledby="input-mode-heading">
+      <div class="content-card">
+        <h2 id="input-mode-heading" class="page-title">ಇನ್ಪುಟ ವಿಧಾನ ಆಯ್ಕೆಮಾಡಿ</h2>
+        <p class="page-subtitle">ನೀವು ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಲು ಯಾವ ವಿಧಾನವನ್ನು ಬಳಸಲು ಬಯಸುತ್ತೀರಿ?</p>
+
+        <div class="grid-cards-2">
+          <!-- Voice Mode -->
+          <button type="button" id="btn-mode-voice" class="selectable-card mode-select-btn" data-mode="voice" aria-label="ಧ್ವನಿ ವಿಧಾನ ಆಯ್ಕೆಮಾಡಿ">
+            <div class="card-icon-badge">🎙️</div>
+            <div class="card-title">ಧ್ವನಿ</div>
+            <div class="card-subtitle">ಕನ್ನಡದಲ್ಲಿ ಮಾತನಾಡಿ ನೇರವಾಗಿ ಬುಕ್ ಮಾಡಿ. ಯಾವುದೇ ಟೈಪಿಂಗ್ ಅಗತ್ಯವಿಲ್ಲ.</div>
+          </button>
+
+          <!-- Tap Button Mode -->
+          <button type="button" id="btn-mode-button" class="selectable-card mode-select-btn" data-mode="button" aria-label="ದೊಡ್ಡ ಬಟನ್ ವಿಧಾನ ಆಯ್ಕೆಮಾಡಿ">
+            <div class="card-icon-badge">👆</div>
+            <div class="card-title">ಬಟನ್</div>
+            <div class="card-subtitle">ಪರದೆಯ ಮೇಲಿನ ದೊಡ್ಡ ಸ್ಪಷ್ಟ ಬಟನ್‌ಗಳನ್ನು ನೇರವಾಗಿ ಮುಟ್ಟಿ ಅಥವಾ ಕ್ಲಿಕ್ ಮಾಡಿ.</div>
+          </button>
+        </div>
+
+        <div style="margin-top: var(--space-lg); display: flex; justify-content: flex-start;">
+          <button type="button" class="btn-secondary btn-screen-back dwell-btn" aria-label="ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ">
+            ⬅️ ಹಿಂದೆ
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: ಗುರುತು ದೃಢೀಕರಣ (Identity Verification Screen) -->
+    <section id="screen-identity" class="screen-panel" aria-labelledby="identity-heading">
+      <div class="content-card">
+        <h2 id="identity-heading" class="page-title">ಗುರುತು ದೃಢೀಕರಣ</h2>
+        <p class="page-subtitle">ರೋಗಿಯ ಹೆಸರು ಮತ್ತು ವಿವರಗಳನ್ನು ದೃಢೀಕರಿಸಿ ಮುಂದುವರಿಯಿರಿ.</p>
+
+        <div class="identity-block">
+          <!-- Prominent Kannada Instruction to Say or Enter Name -->
+          <div class="name-prompt-callout" style="background:#e8f7f5; border:2px solid var(--color-primary); border-radius:12px; padding:16px 20px; margin-bottom:20px; display:flex; align-items:center; gap:16px; box-shadow:0 2px 8px rgba(13,92,86,0.08);">
+            <div style="font-size:36px;" aria-hidden="true">🗣️</div>
+            <div>
+              <div style="font-weight:800; font-size:18px; color:var(--color-primary-dark);">
+                ದಯವಿಟ್ಟು ನಿಮ್ಮ ಹೆಸರನ್ನು ಧ್ವನಿ ಮೂಲಕ ಹೇಳಿ ಅಥವಾ ಕೆಳಗೆ ನಮೂದಿಸಿ
+              </div>
+              <div style="font-size:14px; color:var(--color-text-muted); margin-top:2px;">
+                "ಧ್ವನಿ ಮೂಲಕ ಹೆಸರು ಹೇಳಿ" ಬಟನ್ ಒತ್ತಿ ನೇರವಾಗಿ ಮಾತನಾಡಬಹುದು, ಅಥವಾ ಟ್ಯಾಪ್ ಮಾಡಿ ಆಯ್ಕೆಮಾಡಿ.
+              </div>
+            </div>
+          </div>
+
+          <!-- Patient Name -->
+          <div class="input-field-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <label for="patient-name-input" class="field-label">ರೋಗಿಯ ಹೆಸರು:</label>
+              <button type="button" id="voice-enter-name-btn" class="nav-pill-btn" style="background:#e8f7f5; border-color:var(--color-primary); color:var(--color-primary-dark); font-size:15px; min-height:44px;" aria-label="ಧ್ವನಿ ಮೂಲಕ ಹೆಸರು ಹೇಳಿ">
+                🎙️ ಧ್ವನಿ ಮೂಲಕ ಹೆಸರು ಹೇಳಿ
+              </button>
+            </div>
+            <input type="text" id="patient-name-input" class="kannada-input" value="ರಮೇಶ್ ಕುಮಾರ್" placeholder="ಉದಾಹರಣೆಗೆ: ರಮೇಶ್ ಕುಮಾರ್" aria-label="ರೋಗಿಯ ಹೆಸರು">
+            <div id="voice-name-status" style="display:none; font-size:15px; font-weight:700; color:var(--color-primary-dark); background:#e2f4f1; border-radius:6px; padding:8px 12px; margin-top:6px;">
+              🎙️ ನಿಮ್ಮ ಹೆಸರನ್ನು ಹೇಳಿ (ಉದಾಹರಣೆಗೆ: "ನನ್ನ ಹೆಸರು ಸುರೇಶ್" ಅಥವಾ "ಅನಿತಾ ಗೌಡ")...
+            </div>
+            
+            <div style="font-size: 15px; color: var(--color-text-muted); margin-top: 6px;">ತ್ವರಿತ ಹೆಸರಿನ ಆಯ್ಕೆಗಳು:</div>
+            <div class="quick-chips-row">
+              <button type="button" class="chip-btn name-chip-btn" data-val="ರಮೇಶ್ ಕುಮಾರ್" aria-label="ರಮೇಶ್ ಕುಮಾರ್ ಆಯ್ಕೆ">ರಮೇಶ್ ಕುಮಾರ್</button>
+              <button type="button" class="chip-btn name-chip-btn" data-val="ಅನಿತಾ ಗೌಡ" aria-label="ಅನಿತಾ ಗೌಡ ಆಯ್ಕೆ">ಅನಿತಾ ಗೌಡ</button>
+              <button type="button" class="chip-btn name-chip-btn" data-val="ಸುರೇಶ್ ಹೆಗಡೆ" aria-label="ಸುರೇಶ್ ಹೆಗಡೆ ಆಯ್ಕೆ">ಸುರೇಶ್ ಹೆಗಡೆ</button>
+              <button type="button" class="chip-btn name-chip-btn" data-val="ಲಕ್ಷ್ಮಿ ನಾರಾಯಣ್" aria-label="ಲಕ್ಷ್ಮಿ ನಾರಾಯಣ್ ಆಯ್ಕೆ">ಲಕ್ಷ್ಮಿ ನಾರಾಯಣ್</button>
+            </div>
+          </div>
+
+          <!-- Patient Age (ವಯಸ್ಸು) -->
+          <div class="input-field-group">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <label for="patient-age-input" class="field-label">ರೋಗಿಯ ವಯಸ್ಸು (ವರ್ಷಗಳಲ್ಲಿ):</label>
+              <button type="button" id="voice-enter-age-btn" class="nav-pill-btn" style="background:#e8f7f5; border-color:var(--color-primary); color:var(--color-primary-dark); font-size:15px; min-height:44px;" aria-label="ಧ್ವನಿ ಮೂಲಕ ವಯಸ್ಸು ಹೇಳಿ">
+                🎙️ ಧ್ವನಿ ಮೂಲಕ ವಯಸ್ಸು ಹೇಳಿ
+              </button>
+            </div>
+            <input type="text" id="patient-age-input" class="kannada-input" value="೩೫" placeholder="ಉದಾಹರಣೆಗೆ: ೩೫" aria-label="ರೋಗಿಯ ವಯಸ್ಸು">
+            <div id="voice-age-status" style="display:none; font-size:15px; font-weight:700; color:var(--color-primary-dark); background:#e2f4f1; border-radius:6px; padding:8px 12px; margin-top:6px;">
+              🎙️ ನಿಮ್ಮ ವಯಸ್ಸನ್ನು ಹೇಳಿ (ಉದಾಹರಣೆಗೆ: "ನನ್ನ ವಯಸ್ಸು ೩೫" ಅಥವಾ "೨೮ ವರ್ಷ")...
+            </div>
+            <div style="font-size: 15px; color: var(--color-text-muted); margin-top: 6px;">ತ್ವರಿತ ವಯಸ್ಸಿನ ಆಯ್ಕೆಗಳು:</div>
+            <div class="quick-chips-row">
+              <button type="button" class="chip-btn age-chip-btn" data-val="೨೦" aria-label="೨೦ ವರ್ಷ">೨೦ ವರ್ಷ</button>
+              <button type="button" class="chip-btn age-chip-btn" data-val="೨೮" aria-label="೨೮ ವರ್ಷ">೨೮ ವರ್ಷ</button>
+              <button type="button" class="chip-btn age-chip-btn" data-val="೩೫" aria-label="೩೫ ವರ್ಷ">೩೫ ವರ್ಷ</button>
+              <button type="button" class="chip-btn age-chip-btn" data-val="೪೫" aria-label="೪೫ ವರ್ಷ">೪೫ ವರ್ಷ</button>
+              <button type="button" class="chip-btn age-chip-btn" data-val="೬೦" aria-label="೬೦ ವರ್ಷ">೬೦ ವರ್ಷ</button>
+            </div>
+          </div>
+
+          <!-- 4-Digit Demo Code Box -->
+          <div class="demo-code-card">
+            <div style="font-weight: 800; font-size: 20px; color: #8c5204;">ಪ್ರಾತ್ಯಕ್ಷಿಕೆ (ಡೆಮೊ) ಕೋಡ್ ಸಂಖ್ಯೆ:</div>
+            <div id="demo-code-display" class="demo-code-display" aria-label="ಪ್ರಾತ್ಯಕ್ಷಿಕೆ ಕೋಡ್">೪೨೮೫</div>
+            <p style="font-size: 16px; color: #6d4a04; margin-top: 6px;">
+              ಗಮನಿಸಿ: ಇದು ಪ್ರಾತ್ಯಕ್ಷಿಕೆ (ಡೆಮೊ) ಕೋಡ್ ಆಗಿದೆ. ನೀವು ಧ್ವನಿ ಮೂಲಕ ಈ ಸಂಖ್ಯೆಯನ್ನು ಓದಬಹುದು ಅಥವಾ ಕೆಳಗಿನ ಬಟನ್ ಒತ್ತಿ ದೃಢೀಕರಿಸಬಹುದು.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--space-lg); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn-secondary btn-screen-back dwell-btn" aria-label="ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ">
+            ⬅️ ಹಿಂದೆ
+          </button>
+          <button type="button" id="btn-confirm-identity" class="btn-primary dwell-btn" aria-label="ವಿವರಗಳನ್ನು ದೃಢೀಕರಿಸಿ ಮುಂದಿನ ಹಂತಕ್ಕೆ ಹೋಗಿ">
+            ಸರಿ, ಮುಂದುವರಿಯಿರಿ ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: ವಿಭಾಗ (Department Selection Screen) -->
+    <section id="screen-department" class="screen-panel" aria-labelledby="department-heading">
+      <div class="content-card">
+        <h2 id="department-heading" class="page-title">ವೈದ್ಯಕೀಯ ವಿಭಾಗವನ್ನು ಆಯ್ಕೆಮಾಡಿ</h2>
+        <p class="page-subtitle">ನೀವು ಭೇಟಿ ನೀಡಲು ಇಚ್ಚಿಸುವ ವಿಭಾಗ ಅಥವಾ ತಜ್ಞರನ್ನು ಆರಿಸಿ:</p>
+
+        <!-- Department Cards Grid (Populated dynamically) -->
+        <div id="departments-grid" class="grid-cards-5" role="region" aria-label="ಆಸ್ಪತ್ರೆಯ ವಿಭಾಗಗಳು"></div>
+
+        <div style="margin-top: var(--space-lg); display: flex; justify-content: flex-start;">
+          <button type="button" class="btn-secondary btn-screen-back dwell-btn" aria-label="ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ">
+            ⬅️ ಹಿಂದೆ
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: ದಿನಾಂಕ ಮತ್ತು ಸಮಯ (Date & Time Slots Screen) -->
+    <section id="screen-datetime" class="screen-panel" aria-labelledby="datetime-heading">
+      <div class="content-card">
+        <h2 id="datetime-heading" class="page-title">ದಿನಾಂಕ ಮತ್ತು ಸಮಯದ ಸ್ಲಾಟ್</h2>
+        <p id="datetime-dept-summary" class="page-subtitle" style="font-weight:700; color:var(--color-primary-dark);"></p>
+
+        <!-- Weekdays Scroll / Grid (Next 7 Days) -->
+        <div style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-primary-dark); margin-bottom: 8px;">
+          ಮುಂದಿನ ೭ ದಿನಗಳು:
+        </div>
+        <div id="days-cards-container" class="dates-scroll-container" role="region" aria-label="ದಿನಾಂಕಗಳ ಪಟ್ಟಿ"></div>
+
+        <!-- Time Slots Grid -->
+        <div style="font-size: var(--font-size-lg); font-weight: 800; color: var(--color-primary-dark); margin-bottom: 8px;">
+          ಲಭ್ಯವಿರುವ ಸಮಯದ ಸ್ಲಾಟ್‌ಗಳು:
+        </div>
+        <div id="slots-grid-container" role="region" aria-label="ಲಭ್ಯವಿರುವ ಸಮಯಗಳು"></div>
+
+        <div style="margin-top: var(--space-lg); display: flex; justify-content: flex-start;">
+          <button type="button" class="btn-secondary btn-screen-back dwell-btn" aria-label="ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ">
+            ⬅️ ಹಿಂದೆ
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 6: ದೃಢೀಕರಣ (Confirmation & SMS Screen) -->
+    <section id="screen-confirm" class="screen-panel" aria-labelledby="confirm-heading">
+      <div class="content-card">
+        <h2 id="confirm-heading" class="page-title" style="color:var(--color-success);">🎉 ಬುಕಿಂಗ್ ಯಶಸ್ವಿಯಾಗಿದೆ!</h2>
+        <p class="page-subtitle">ನಿಮ್ಮ ಆಸ್ಪತ್ರೆ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಅಧಿಕೃತವಾಗಿ ದಾಖಲಾಗಿದೆ.</p>
+
+        <div class="summary-container">
+          <!-- Summary Details -->
+          <div class="summary-details-card">
+            <div class="summary-row">
+              <span class="summary-label">ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ:</span>
+              <span id="confirm-ref-code" class="ref-code-badge">HL-೪೨೮೫</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">ರೋಗಿಯ ಹೆಸರು:</span>
+              <span id="confirm-patient-name" class="summary-value">ರಮೇಶ್ ಕುಮಾರ್</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">ರೋಗಿಯ ವಯಸ್ಸು:</span>
+              <span id="confirm-patient-age" class="summary-value">೩೫ ವರ್ಷ</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">ಆಸ್ಪತ್ರೆ ವಿಭಾಗ:</span>
+              <span id="confirm-department" class="summary-value">ಹೃದಯ ವಿಭಾಗ</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">ತಜ್ಞ ವೈದ್ಯರು:</span>
+              <span id="confirm-doctor" class="summary-value">ಡಾ. ರಮೇಶ್ ಕುಮಾರ್</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">ದಿನಾಂಕ:</span>
+              <span id="confirm-date" class="summary-value">ಸೋಮವಾರ</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-label">ಸಮಯ:</span>
+              <span id="confirm-time" class="summary-value">೧೦:೦೦ ಬೆಳಿಗ್ಗೆ</span>
+            </div>
+          </div>
+
+          <!-- SMS Notification Box -->
+          <div class="sms-phone-mockup" role="region" aria-label="ಮೊಬೈಲ್ ಸಂದೇಶ ಮಾಹಿತಿ">
+            <div class="sms-header">
+              <span>📩 ಮೊಬೈಲ್ ಸಂದೇಶ ಪೂರ್ವವೀಕ್ಷಣೆ:</span>
+            </div>
+            <div id="confirm-sms-text" class="sms-bubble">
+              ಆಸ್ಪತ್ರೆ ಸಂದೇಶ: ಗೌರವಾನ್ವಿತ ರಮೇಶ್ ಕುಮಾರ್, ನಿಮ್ಮ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಯಶಸ್ವಿಯಾಗಿ ಕಾಯ್ದಿರಿಸಲಾಗಿದೆ. ಉಲ್ಲೇಖ ಸಂಖ್ಯೆ: HL-೪೨೮೫.
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--space-xl); display: flex; gap: 14px; flex-wrap: wrap;">
+          <button type="button" id="btn-view-my-bookings" class="btn-primary dwell-btn" aria-label="ನನ್ನ ಬುಕಿಂಗ್‌ಗಳನ್ನು ನೋಡಿ">
+            📋 ನನ್ನ ಬುಕಿಂಗ್‌ಗಳು ನೋಡಿ
+          </button>
+          <button type="button" id="btn-new-booking" class="btn-secondary dwell-btn" aria-label="ಮತ್ತೊಂದು ಹೊಸ ಬುಕಿಂಗ್ ಮಾಡಿ">
+            ➕ ಹೊಸ ಬುಕಿಂಗ್ ಮಾಡಿ
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREEN 7: ನನ್ನ ಬುಕಿಂಗ್‌ಗಳು (My Bookings List Screen) -->
+    <section id="screen-my_bookings" class="screen-panel" aria-labelledby="my-bookings-heading">
+      <div class="content-card">
+        <h2 id="my-bookings-heading" class="page-title">ನನ್ನ ಬುಕಿಂಗ್‌ಗಳು</h2>
+        <p class="page-subtitle">ನಿಮ್ಮ ಸಕ್ರಿಯ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಳ ವಿವರಗಳು:</p>
+
+        <!-- Empty State Notice -->
+        <div id="no-bookings-notice" style="display:none; text-align:center; padding:var(--space-xl); color:var(--color-text-muted);">
+          <div style="font-size: 48px; margin-bottom: 8px;">📑</div>
+          <div style="font-size: var(--font-size-xl); font-weight: 700;">ಯಾವುದೇ ಬುಕಿಂಗ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ</div>
+          <p style="margin-top: 6px;">ಹೊಸ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಕಾಯ್ದಿರಿಸಲು ಕೆಳಗಿನ ಬಟನ್ ಒತ್ತಿರಿ.</p>
+        </div>
+
+        <!-- Bookings List -->
+        <div id="my-bookings-list" class="bookings-list" role="region" aria-label="ನನ್ನ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್‌ಗಳ ಪಟ್ಟಿ"></div>
+
+        <div style="margin-top: var(--space-xl); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <button type="button" class="btn-secondary btn-screen-back dwell-btn" aria-label="ಹಿಂದಿನ ಪುಟಕ್ಕೆ ಹೋಗಿ">
+            ⬅️ ಹಿಂದೆ
+          </button>
+          <button type="button" onclick="HealioApp.setScreen('welcome')" class="btn-primary dwell-btn" aria-label="ಹೊಸ ಬುಕಿಂಗ್ ಪ್ರಾರಂಭಿಸಿ">
+            ➕ ಹೊಸ ಅಪಾಯಿಂಟ್‌ಮೆಂಟ್ ಬುಕ್ ಮಾಡಿ
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- SCREEN: ಕನ್ನಡ ಕಲಿಯಿರಿ (Everyday Life Kannada Learning Center Modal) -->
+  <div id="learn-kannada-modal" class="learn-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="learn-modal-title" aria-hidden="true" style="display:none;">
+    <div class="learn-card-container">
+      <div class="learn-modal-header">
+        <div>
+          <h2 id="learn-modal-title" style="font-size:26px; font-weight:800; color:var(--color-primary-dark);">
+            🎓 ದೈನಂದಿನ ಜೀವನದಲ್ಲಿ ಕನ್ನಡ (Kannada in Everyday Life)
+          </h2>
+          <p style="font-size:16px; color:var(--color-text-muted); margin-top:4px;">
+            ಆರೋಗ್ಯ, ಪ್ರಯಾಣ, ಸಾರಿಗೆ, ಔಷಧಾಲಯ ಮತ್ತು ಕೆಲಸದ ಸ್ಥಳಗಳಲ್ಲಿ ಕನ್ನಡವನ್ನು ಸುಲಭವಾಗಿ ಕಲಿಯಿರಿ ಮತ್ತು ಮಾತನಾಡಿ.
+          </p>
+        </div>
+        <button type="button" id="learn-modal-close-btn" class="nav-pill-btn dwell-btn" aria-label="ಕಲಿಕೆ ಪರದೆ ಮುಚ್ಚಿ" style="font-size:16px; font-weight:800; min-height:44px;">
+          ✖ ಮುಚ್ಚಿ (Close)
+        </button>
+      </div>
+
+      <!-- Categories Tabs -->
+      <div id="learn-categories-tabs" class="learn-categories-tabs" role="tablist" aria-label="ಕಲಿಕೆ ವಿಭಾಗಗಳು"></div>
+
+      <!-- Live Voice Practice Feedback Box -->
+      <div id="voice-practice-feedback" class="voice-practice-box" style="display:none;" aria-live="polite">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-weight:700; color:var(--color-primary-dark); font-size:16px;">🎙️ ಧ್ವನಿ ಅಭ್ಯಾಸ ಫಲಿತಾಂಶ:</div>
+          <button type="button" id="close-practice-feedback-btn" class="nav-pill-btn dwell-btn" style="min-height:32px; padding:2px 8px; font-size:12px;">✖</button>
+        </div>
+        <div id="voice-practice-spoken-text" style="font-size:18px; margin:4px 0; font-weight:800; color:var(--color-primary);"></div>
+        <div id="voice-practice-result-text" style="font-size:16px; font-weight:700;"></div>
+      </div>
+
+      <!-- Phrases Cards Grid -->
+      <div id="learn-phrases-container" class="learn-phrases-grid" role="region" aria-label="ಕನ್ನಡ ನುಡಿಗಟ್ಟುಗಳ ಪಟ್ಟಿ"></div>
+    </div>
+  </div>
+
+  <!-- SCREEN 8: ತುರ್ತು ಪರಿಸ್ಥಿತಿ (Emergency Fullscreen Modal Overlay) -->
+  <div id="emergency-modal" class="emergency-modal-overlay" role="dialog" aria-modal="true" aria-labelledby="emergency-title" aria-hidden="true">
+    <div class="emergency-card-container">
+      <div class="emergency-icon-lg" aria-hidden="true">🚨</div>
+      <h2 id="emergency-title" class="emergency-alert-title">ತುರ್ತು ಪರಿಸ್ಥಿತಿ!</h2>
+      <p style="font-size: var(--font-size-xl); font-weight: 700; color: var(--color-emergency); margin-bottom: var(--space-sm);">
+        ತಕ್ಷಣ ೧೦೮ ಆಂಬ್ಯುಲೆನ್ಸ್ ಸೇವೆಗೆ ಕರೆ ಮಾಡಿ
+      </p>
+      
+      <p style="font-size: var(--font-size-lg); color: var(--color-text); margin-bottom: var(--space-md); line-height: 1.6;">
+        ಎದೆ ನೋವು, ತೀವ್ರ ಉಸಿರಾಟದ ತೊಂದರೆ, ಅಥವಾ ರಕ್ತಸ್ರಾವ ಮುಂತಾದ ಗಂಭೀರ ಲಕ್ಷಣಗಳು ಕಂಡುಬಂದಲ್ಲಿ ಆನ್‌ಲೈನ್ ಬುಕಿಂಗ್‌ಗೆ ಕಾಯದೆ ತಕ್ಷಣವೇ ತುರ್ತು ಚಿಕಿತ್ಸಾ ವಾಹನವನ್ನು ಸಂಪರ್ಕಿಸಿ.
+      </p>
+
+      <!-- Direct Call 108 Button -->
+      <a href="tel:108" class="call-108-hero-btn dwell-btn" aria-label="೧೦೮ ಸಂಖ್ಯೆಗೆ ತಕ್ಷಣವೇ ಕರೆ ಮಾಡಿ">
+        📞 ೧೦೮ ಗೆ ಕರೆ ಮಾಡಿ
+      </a>
+
+      <div style="margin-top: var(--space-md);">
+        <button type="button" id="emergency-close-btn" class="btn-secondary dwell-btn" style="min-width: 220px;" aria-label="ತುರ್ತು ಪರದೆಯನ್ನು ಮುಚ್ಚಿ ಬುಕಿಂಗ್‌ಗೆ ಹಿಂತಿರುಗಿ">
+          ಬುಕಿಂಗ್‌ಗೆ ಹಿಂತಿರುಗಿ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="app-footer" role="contentinfo">
+    <p><strong>ಹೀಲಿಯೋ</strong> - ಕೈಮುಕ್ತ ಆಸ್ಪತ್ರೆ ನೇಮಕಾತಿ ವ್ಯವಸ್ಥೆ</p>
+    <p style="margin-top: 4px;">ಗೌಪ್ಯತೆ: ಯಾವುದೇ ವೈಯಕ್ತಿಕ ವಿವರ ಸಾಧನದಿಂದ ಹೊರಗೆ ಹೋಗುವುದಿಲ್ಲ. ಧ್ವನಿಯನ್ನು ರೆಕಾರ್ಡ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ.</p>
+    <p style="margin-top: 2px; font-weight: 700; color: #8a3b00;">ಇದು ಪ್ರಾತ್ಯಕ್ಷಿಕೆ (ಡೆಮೊ) ಆವೃತ್ತಿ. ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ ೧೦೮ ಕರೆ ಮಾಡಿ.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="nlp.js"></script>
+  <script src="speech.js"></script>
+  <script src="scene3d.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
